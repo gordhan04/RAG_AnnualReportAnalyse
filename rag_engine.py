@@ -8,8 +8,8 @@ load_dotenv()
 if not os.getenv("GROQ_API_KEY"):
     raise ValueError("GROQ_API_KEY not found. Please check your .env file.")
 
-from langchain_community.document_loaders import PDFPlumberLoader
-from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyMuPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_groq import ChatGroq
@@ -20,28 +20,15 @@ from langchain_core.prompts import ChatPromptTemplate
 # 1. Load and Process Document with Docling
 def process_document_to_chroma(uploaded_file_path):
     # Docling is powerful: It converts PDF tables to Markdown tables automatically
-    
-    loader = PDFPlumberLoader(uploaded_file_path)
-
-    
+    loader = PyMuPDFLoader(uploaded_file_path)
     docs = loader.load()
     
-    # 2. Smart Splitting for Reports
-    # First, split by Headers (H1, H2, H3) to keep sections like "Financial Results" together
-    headers_to_split_on = [
-        ("#", "Header 1"),
-        ("##", "Header 2"),
-        ("###", "Header 3"),
-    ]
-    markdown_splitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_to_split_on)
-    md_header_splits = markdown_splitter.split_text(docs[0].page_content)
-
     # Then chunk recursively to fit context windows
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1200, 
         chunk_overlap=200
     )
-    splits = text_splitter.split_documents(md_header_splits)
+    splits = text_splitter.split_documents(docs)
     
     # 3. Embeddings & Vector DB
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
