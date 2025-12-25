@@ -1,4 +1,5 @@
 import os
+import shutil
 from dotenv import load_dotenv
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
@@ -18,6 +19,8 @@ if not os.getenv("GROQ_API_KEY"):
 def process_document_to_chroma(uploaded_file_path):
     # Note: PyMuPDF is fast but Docling is better for Tables.
     # Proceeding with PyMuPDF as requested.
+    if os.path.exists("./chroma_db"):
+        shutil.rmtree("./chroma_db")
     loader = PyMuPDFLoader(uploaded_file_path)
     docs = loader.load()
     
@@ -42,7 +45,8 @@ def format_docs(docs):
 def get_rag_chain(vectorstore):
     llm = ChatGroq(
         model="llama-3.1-8b-instant",
-        temperature=0
+        temperature=0,
+        streaming=True
     )
     
     retriever = vectorstore.as_retriever(
