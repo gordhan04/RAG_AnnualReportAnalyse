@@ -1,7 +1,6 @@
 import streamlit as st
 import os
 import tempfile
-import shutil
 from dotenv import load_dotenv
 from langchain_core.messages import AIMessage, HumanMessage
 # Import your custom modules
@@ -24,7 +23,7 @@ def reset_application():
             st.toast("Database cleared successfully")
 
         except Exception as e:
-            print(f"⚠️ Error clearing collection: {e}")
+            st.toast(f"⚠️ Error clearing collection: {e}")
         
         # NOW we can remove the reference from memory
         del st.session_state.vectorstore 
@@ -32,14 +31,14 @@ def reset_application():
     # 2. Physical Wipe (Optional Backup)
     # We try to delete the folder, but if Windows blocks it, we ignore it.
     # Since we already emptied the DB in Step 1, it doesn't matter if the folder stays!
-    if os.path.exists("./chroma_db"):
-        try:
-            shutil.rmtree("./chroma_db")
-            print("✅ Folder deleted.")
-        except PermissionError:
-            print("🔒 Windows locked the folder. Keeping empty folder (safe).")
-        except Exception as e:
-            print(f"⚠️ Other deletion error: {e}")
+    # if os.path.exists("./chroma_db"):
+    #     try:
+    #         shutil.rmtree("./chroma_db")
+    #         print("✅ Folder deleted.")
+    #     except PermissionError:
+    #         print("🔒 Windows locked the folder. Keeping empty folder (safe).")
+    #     except Exception as e:
+    #         print(f"⚠️ Other deletion error: {e}")
 
     # 3. Clear History
     st.session_state.chat_history = []

@@ -1,198 +1,97 @@
-# 📊 Annual Report Analyst (RAG-based Financial Document AI)
+# Annual Report Analyst (RAG Project)
 
-An AI-powered **Annual Report Analyst** that allows users to upload company annual reports / 10-K PDFs and ask intelligent questions about **financials, risks, strategy, and KPIs** using a **Retrieval-Augmented Generation (RAG)** pipeline.
+This project is an **AI-powered Annual Report Analyst** built to analyze **Indian company annual reports / integrated reports** using a **Retrieval-Augmented Generation (RAG)** approach.
 
-This project is designed as a **portfolio-grade, production-style application**, not a demo script.
-
----
-
-## 🚀 Key Features
-
-### 1️⃣ Conversational Financial Q&A (RAG)
-
-* Ask natural language questions about annual reports
-* Answers are grounded strictly in document context
-* Uses **history-aware retrieval** to understand follow-up questions
-
-Example:
-
-> "What is the revenue?"
-> "How did it change compared to last year?"
-
-The system automatically reformulates the second question using chat history.
+It allows users to upload a PDF annual report and ask questions related to **financials, risks, compliance, cash flow, and management discussion**, with answers grounded in the document.
 
 ---
 
-### 2️⃣ KPI Mode (Business-Focused Analysis)
+## What This Project Does
 
-Predefined analytical modes for quick insights:
+* Upload an Indian annual report (PDF)
+* Index the document using embeddings
+* Retrieve only relevant sections (financials, risks, notes, MD&A)
+* Answer user questions using a Large Language Model
+* Show source pages and confidence for answers
 
-* 📈 **Revenue & Profitability**
-  Growth trends, margins, YoY comparisons
-
-* ⚠️ **Risk Factors**
-  Regulatory risks, operational risks, red flags
-
-* 💰 **Cash Flow Health**
-  Operating cash flow, debt signals, liquidity
-
-This makes the app useful not only for Q&A, but also for **executive-level analysis**.
+This project is designed for **portfolio and interview demonstration**, focusing on real-world document analysis.
 
 ---
 
-### 3️⃣ Citation Confidence & Source Transparency
+## Key Features
 
-Every answer includes:
-
-* Source document chunks
-* Page numbers
-* A **confidence indicator**:
-
-| Confidence | Meaning                           |
-| ---------- | --------------------------------- |
-| High       | Multiple consistent sources found |
-| Medium     | Limited but relevant context      |
-| Low        | Weak or partial evidence          |
-
-This improves trust and reduces hallucination.
+* RAG-based document question answering
+* History-aware retrieval for follow-up questions
+* Section-aware filtering (ignores AGM and voting procedures)
+* Source citations with page numbers
+* Streaming responses for better user experience
 
 ---
 
-### 4️⃣ Streaming Responses (Real-time UX)
+## Example Questions You Can Ask
 
-* Responses stream token-by-token
-* Feels fast and interactive
-* Suitable for long analytical answers
-
----
-
-### 5️⃣ Robust Session & Reset Handling
-
-* Logical DB wipe (vector store reset)
-* Optional physical cleanup
-* Clean session state reset
-
-Designed to avoid stale embeddings or corrupted sessions.
+* What is the standalone vs consolidated revenue?
+* What are the major risk factors mentioned?
+* Are there any red flags in cash flow?
+* What dividend has been declared?
+* Summarize management discussion and outlook
+* Any related party transactions disclosed?
 
 ---
 
-## 🧠 Architecture Overview
+## Tech Stack
 
-```
-User (Streamlit UI)
-   │
-   ▼
-History-aware Retriever
-   │   (Rewrites query using chat memory)
-   ▼
-Vector Store (Chroma + BGE Embeddings)
-   │
-   ▼
-LLM (Groq – low latency)
-   │
-   ▼
-Grounded Answer + Sources
-```
+* Python
+* Streamlit (UI)
+* LangChain (RAG framework)
+* Chroma (vector database)
+* HuggingFace embeddings (BGE / E5)
+* Groq LLM (low-latency inference)
+* PyMuPDF (PDF parsing)
 
 ---
 
-## 🧩 Tech Stack
+## How It Works (High Level)
 
-| Component     | Technology                |
-| ------------- | ------------------------- |
-| Frontend      | Streamlit                 |
-| LLM           | Groq (openai/gpt-oss-20b) |
-| Embeddings    | BAAI/bge-small-en-v1.5    |
-| Vector DB     | Chroma                    |
-| PDF Loader    | PyMuPDF                   |
-| RAG Framework | LangChain                 |
+1. User uploads an annual report PDF
+2. The document is cleaned and irrelevant sections are removed
+3. Text is split into chunks and embedded
+4. Relevant chunks are retrieved based on the question
+5. The LLM generates an answer using retrieved context
+6. Sources and confidence are shown to the user
 
 ---
 
-## 🔍 Why These Choices?
-
-### 🔹 History-Aware Retriever
-
-* Solves vague follow-up questions
-* Mimics how analysts ask sequential questions
-
-### 🔹 BGE Embeddings
-
-* Strong performance on financial & factual text
-* Lightweight and fast
-
-### 🔹 Groq LLM
-
-* Extremely low latency
-* Ideal for streaming UX
-
----
-
-## 🛠️ How to Run Locally
+## How to Run the Project
 
 ```bash
-git clone https://github.com/gordhan04/project.git
-cd project
+git clone https://github.com/gordhan04/RAG_AnnualReportAnalyse.git
+cd annual-report-analyst
 
 pip install -r requirements.txt
 
-# Add your API key
-cp .env.example .env
-
+# Add API key in .env file
 streamlit run app.py
 ```
 
 ---
 
-## � Example Questions
+## Why This Project Is Useful
 
-* What is the revenue growth over the last 3 years?
-* What are the major risk factors mentioned?
-* Are there any red flags in cash flow?
-* Summarize management strategy
+* Demonstrates real-world RAG implementation
+* Handles long, compliance-heavy Indian reports
+* Shows understanding of financial documents
+* Designed with performance and retrieval quality in mind
 
----
+This project is suitable for roles related to:
 
-## 🎯 Portfolio Value
-
-This project demonstrates:
-
-* Real-world RAG architecture
-* Document-grounded reasoning
-* Business-focused AI usage
-* Production-style Streamlit application
-
-It is suitable for:
-
-* Data Science portfolios
-* AI Engineer roles
-* Agentic AI / RAG-based system interviews
+* Data Science
+* AI / ML Engineering
+* Applied NLP
+* RAG-based systems
 
 ---
 
-## � Future Improvements
+## Author
 
-* Multi-document comparison
-* Table-aware financial parsing
-* KPI dashboards
-* Exportable analysis reports
-📊 Analyze Indian Annual & Integrated Reports
-
-📈 Extract financial performance (Standalone & Consolidated)
-
-⚠️ Identify regulatory and compliance risks (SEBI / MCA)
-
-💰 Evaluate cash flow, debt, and dividend policies
-
-🧾 Understand Related Party Transactions
-
-📄 Source-backed answers with page-level citations
-
-🔍 Confidence scoring for analytical reliability
----
-
-## � Author
-
-**Govardhan Rajpurohit**
-Aspiring AI / Data Science Engineer
-Focused on RAG systems, Agentic AI, and applied ML
+Govardhan Purohit
